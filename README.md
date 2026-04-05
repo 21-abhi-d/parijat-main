@@ -1,1 +1,0 @@
-# parijat-main

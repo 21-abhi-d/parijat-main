@@ -23,7 +23,6 @@ export interface IProduct extends Document {
   stockQty: number;
   images: IProductImage[];
   description?: string;
-  featured: boolean;
   active: boolean;
 
   // ── Internal fields (admin only — never expose to customers) ────────────────
@@ -32,7 +31,6 @@ export interface IProduct extends Document {
   costINR?: number;
   audConversionRate?: number;
   costAUD?: number;
-  estimatedSalePrice?: number;
   sold: boolean;
 
   createdAt: Date;
@@ -69,7 +67,6 @@ const productSchema = new Schema<IProduct>(
     stockQty: { type: Number, default: 0, min: 0 },
     images: [productImageSchema],
     description: { type: String, trim: true },
-    featured: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
 
     // Internal
@@ -78,7 +75,6 @@ const productSchema = new Schema<IProduct>(
     costINR: { type: Number, min: 0 },
     audConversionRate: { type: Number, min: 0 },
     costAUD: { type: Number, min: 0 },
-    estimatedSalePrice: { type: Number, min: 0 },
     sold: { type: Boolean, default: false },
   },
   { timestamps: true },
@@ -97,4 +93,4 @@ export const ProductModel: Model<IProduct> =
 // ── Public field selector (use this in all customer-facing queries) ───────────
 
 export const PUBLIC_PRODUCT_FIELDS =
-  "slug code name category type colour priceAUD stockStatus stockQty images description featured active createdAt";
+  "slug code name category type colour priceAUD stockStatus stockQty images description active createdAt";

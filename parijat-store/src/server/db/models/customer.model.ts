@@ -11,12 +11,18 @@ export interface ICustomerNotificationPrefs {
   topics: NotificationTopic[];
 }
 
+export interface IWishlistItem {
+  productId: mongoose.Types.ObjectId;
+  addedAt: Date;
+}
+
 export interface ICustomer extends Document {
   email: string;
   name?: string;
   role: UserRole;
   phone?: string;
   notifications: ICustomerNotificationPrefs;
+  wishlist: IWishlistItem[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,9 +54,19 @@ const customerSchema = new Schema<ICustomer>(
     },
     phone: { type: String, trim: true },
     notifications: { type: notificationPrefsSchema, default: () => ({}) },
+    wishlist: [
+      {
+        productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+        addedAt: { type: Date, default: Date.now },
+        _id: false,
+      },
+    ],
   },
   { timestamps: true },
 );
+
+// Enables fast "who wishlisted this product?" and demand count queries
+customerSchema.index({ "wishlist.productId": 1 });
 
 // ── Model ─────────────────────────────────────────────────────────────────────
 

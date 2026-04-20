@@ -15,6 +15,16 @@ Body: what happened, why, and what to do differently.
 
 ---
 
+### [2026-04-20] Phase 1.3 — Auth config (Google OAuth + MongoDB adapter)
+**Type:** Finding + Decision
+**Phase:** 1.3
+
+- `@auth/mongodb-adapter@3.11.x` declares `mongodb@^6` as a peer dependency but mongoose@9 ships mongodb@7. Added `legacy-peer-deps=true` to `.npmrc` to resolve this. The adapter works fine at runtime with mongodb@7 — the API surface it uses (collections, sessions) hasn't changed.
+- Made AWS, Resend, Twilio, Cal.com env vars optional in `src/env.js` so the app can start without those services configured. They will be tightened back to required when each service is implemented.
+- Resend magic link provider deferred — will be added to `authConfig.providers` once `RESEND_API_KEY` is set.
+- Session strategy set to `"database"` — sessions stored in MongoDB `sessions` collection. Enables immediate revocation. Trade-off: one DB read per authenticated request.
+- `role` defaults to `"customer"` if not set on the user document. Admin role must be seeded manually via `scripts/seed-admin.ts` (not yet written).
+
 ### [2026-04-07] Phase 1.2 complete — database layer
 **Type:** Decision
 **Phase:** 1.2

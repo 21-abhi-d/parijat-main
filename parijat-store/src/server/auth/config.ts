@@ -1,52 +1,59 @@
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import Google from "next-auth/providers/google";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
+import { mongoClientPromise } from "~/server/db/mongo-client";
+
+// ── Session type augmentation ─────────────────────────────────────────────────
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      role: "customer" | "admin";
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    role?: "customer" | "admin";
+  }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
+// ── Auth config ───────────────────────────────────────────────────────────────
+
 export const authConfig = {
+  adapter: MongoDBAdapter(mongoClientPromise, {
+    databaseName: "parijat",
+  }),
+
   providers: [
-    DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
-  ],
-  callbacks: {
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.sub,
-      },
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
+    // Resend magic link will be added here once RESEND_API_KEY is configured
+  ],
+
+  session: {
+    // Database sessions allow immediate revocation by deleting from MongoDB
+    strategy: "database",
+  },
+
+  callbacks: {
+    session({ session, user }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          role: (user.role ?? "customer") as "customer" | "admin",
+        },
+      };
+    },
+  },
+
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
 } satisfies NextAuthConfig;

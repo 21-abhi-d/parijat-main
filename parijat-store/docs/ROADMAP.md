@@ -21,9 +21,10 @@ Tick off items as they are completed. See `docs/PLAN.md` for detailed design dec
 - [x] `src/server/db/models/notification.model.ts`
 
 ### 1.3 Auth
-- [ ] Replace Discord provider with Resend (magic link) + Google OAuth in `src/server/auth/config.ts`
-- [ ] Add `@auth/mongodb-adapter`, set `strategy: "database"`
-- [ ] Augment session type with `id` and `role`
+- [x] Replace Discord provider with Google OAuth in `src/server/auth/config.ts`
+- [x] Add `@auth/mongodb-adapter`, set `strategy: "database"`
+- [x] Augment session type with `id` and `role`
+- [ ] Add Resend magic link provider (deferred — needs RESEND_API_KEY)
 - [ ] `scripts/seed-admin.ts`
 - [ ] `scripts/hash-password.ts`
 

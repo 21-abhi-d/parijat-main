@@ -18,29 +18,29 @@ export const env = createEnv({
     // MongoDB
     MONGODB_URI: z.string().url(),
 
-    // AWS S3 + CloudFront
+    // AWS S3 + CloudFront (required when storage service is implemented)
     AWS_REGION: z.string().default("ap-southeast-2"),
-    AWS_ACCESS_KEY_ID: z.string().optional(), // use IAM role in prod
-    AWS_SECRET_ACCESS_KEY: z.string().optional(), // use IAM role in prod
-    S3_BUCKET_NAME: z.string(),
-    CLOUDFRONT_URL: z.string().url(),
+    AWS_ACCESS_KEY_ID: z.string().optional(),
+    AWS_SECRET_ACCESS_KEY: z.string().optional(),
+    S3_BUCKET_NAME: z.string().optional(),
+    CLOUDFRONT_URL: z.string().url().optional(),
 
-    // Resend (email)
-    RESEND_API_KEY: z.string(),
-    RESEND_FROM_ADDRESS: z.string().email(),
+    // Resend (required when email notifications are implemented)
+    RESEND_API_KEY: z.string().optional(),
+    RESEND_FROM_ADDRESS: z.string().email().optional(),
 
-    // Twilio (SMS)
-    TWILIO_ACCOUNT_SID: z.string(),
-    TWILIO_AUTH_TOKEN: z.string(),
-    TWILIO_FROM_NUMBER: z.string(),
+    // Twilio (required when SMS notifications are implemented)
+    TWILIO_ACCOUNT_SID: z.string().optional(),
+    TWILIO_AUTH_TOKEN: z.string().optional(),
+    TWILIO_FROM_NUMBER: z.string().optional(),
 
-    // Cal.com webhook (secret for verifying incoming webhooks if added later)
+    // Cal.com webhook (optional — only if booking mirroring is added later)
     CALCOM_WEBHOOK_SECRET: z.string().optional(),
   },
 
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_CALCOM_LINK: z.string(),
+    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+    NEXT_PUBLIC_CALCOM_LINK: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
   },

@@ -39,7 +39,6 @@ Copy `.env.example` → `.env` once it is created. Key variables to add:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 - `MONGODB_URI`, `CLOUDFRONT_URL`, `S3_BUCKET_NAME`
 - `RESEND_API_KEY`, `RESEND_FROM_ADDRESS`
-- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`
 - `NEXT_PUBLIC_CALCOM_LINK`
 
 ## Current State (T3 Scaffold)

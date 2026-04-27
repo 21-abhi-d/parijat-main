@@ -29,34 +29,34 @@ Tick off items as they are completed. See `docs/PLAN.md` for detailed design dec
 - [ ] `scripts/hash-password.ts`
 
 ### 1.4 tRPC
-- [ ] Add `adminProcedure` to `src/server/api/trpc.ts`
-- [ ] `src/server/api/routers/catalog.router.ts`
-- [ ] `src/server/api/routers/product.router.ts`
-- [ ] `src/server/api/routers/customer.router.ts`
-- [ ] `src/server/api/routers/inventory.router.ts`
-- [ ] `src/server/api/routers/notification.router.ts`
-- [ ] `src/server/api/routers/admin.router.ts`
-- [ ] `src/server/api/routers/uploads.router.ts`
-- [ ] Wire all routers into `src/server/api/root.ts`
+- [x] Add `adminProcedure` to `src/server/api/trpc.ts`
+- [x] `src/server/api/routers/catalog.router.ts`
+- [x] `src/server/api/routers/product.router.ts`
+- [x] `src/server/api/routers/customer.router.ts`
+- [x] `src/server/api/routers/inventory.router.ts`
+- [x] `src/server/api/routers/notification.router.ts`
+- [x] `src/server/api/routers/admin.router.ts`
+- [x] `src/server/api/routers/uploads.router.ts` (stubbed — needs Phase 1.5 storage service)
+- [x] Wire all routers into `src/server/api/root.ts`
 
 ### 1.5 Services
-- [ ] `src/server/services/storage/storage.interface.ts`
-- [ ] `src/server/services/storage/s3-storage.service.ts`
-- [ ] `src/server/services/inventory/inventory.interface.ts`
-- [ ] `src/server/services/inventory/mongo-inventory.service.ts`
-- [ ] `src/server/services/notification/notification.interface.ts`
-- [ ] `src/server/services/notification/email.service.ts` (Resend)
-- [ ] `src/server/services/notification/sms.service.ts` (Twilio)
-- [ ] `src/server/services/notification/notification.service.ts` (orchestrator)
+- [x] `src/server/services/storage/storage.interface.ts`
+- [x] `src/server/services/storage/s3-storage.service.ts`
+- [x] `src/server/services/inventory/inventory.interface.ts`
+- [x] `src/server/services/inventory/mongo-inventory.service.ts`
+- [x] `src/server/services/notification/notification.interface.ts`
+- [x] `src/server/services/notification/email.service.ts` (Resend)
+- [x] `src/server/services/notification/notification.service.ts` (orchestrator)
+- [ ] `src/server/services/notification/sms.service.ts` (Twilio — deferred)
 
 ### 1.6 Middleware & Route Protection
-- [ ] `src/middleware.ts` — protect `/admin/*` and `/account/*`
+- [x] `src/middleware.ts` — protect `/admin/*` and `/account/*`
 
 ### 1.7 Validators
-- [ ] `src/lib/validators/product.schema.ts`
-- [ ] `src/lib/validators/customer.schema.ts`
-- [ ] `src/lib/validators/inventory.schema.ts`
-- [ ] `src/lib/validators/notification.schema.ts`
+- [x] `src/lib/validators/product.schema.ts`
+- [x] `src/lib/validators/customer.schema.ts`
+- [x] `src/lib/validators/inventory.schema.ts`
+- [x] `src/lib/validators/notification.schema.ts`
 
 ---
 

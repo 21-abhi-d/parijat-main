@@ -15,6 +15,57 @@ Body: what happened, why, and what to do differently.
 
 ---
 
+### [2026-04-25] SMS/Twilio removed — email-only notifications
+**Type:** Decision
+**Phase:** 1.5 (retroactive)
+
+Removed all Twilio/SMS code: `sms.service.ts` deleted, `NotificationChannel` type collapsed to `"email"` only, `notifications.sms` field removed from `CustomerModel`, channel input removed from `sendNotificationSchema` and `getRecipientCountSchema`. `env.js` Twilio vars removed. Rationale: boutique scale — email covers the real use case; SMS can be added as a discrete feature when needed. Having a full SMS path wired up with no credentials and no UI creates confusion and dead branches.
+
+### [2026-04-24] Phase 1.7 complete — validators extracted
+**Type:** Decision
+**Phase:** 1.7
+
+- Four Zod schemas created in `src/lib/validators/`: `product.schema.ts`, `customer.schema.ts`, `inventory.schema.ts`, `notification.schema.ts`.
+- All inline schemas removed from routers (`product`, `customer`, `inventory`, `notification`). Routers now import types and schemas from validators — same source of truth for tRPC input validation and future react-hook-form usage.
+- `z` import dropped from routers that no longer use it directly. `inventory.router.ts` retains `z` for the single-field `getStock` input (`z.object({ productId: z.string() })`), which is too trivial to warrant its own named schema.
+
+---
+
+### [2026-04-20] Phase 1.6 complete — middleware + auth strategy change
+**Type:** Decision + Mistake
+**Phase:** 1.6
+
+- Changed `session.strategy` from `"database"` to `"jwt"`. Database sessions require a MongoDB call to verify — MongoDB cannot run on Next.js Edge runtime (where middleware executes). JWT sessions are verified cryptographically on Edge with no DB call. MongoDB adapter still creates user + account documents on sign-in.
+- `declare module "next-auth/jwt"` augmentation fails in next-auth@5.0.0-beta.25 — that module path does not exist in this version. Removed augmentation; cast `token.role` inline as `"customer" | "admin" | undefined` instead.
+- Middleware checks authentication only (redirect to `/auth/signin` if no session). Admin role check is done server-side in the admin layout — that is the correct layer for role enforcement since it has full DB access.
+- `callbackUrl` is passed to the sign-in URL so users are redirected back after signing in.
+
+### [2026-04-20] Phase 1.5 complete — services layer
+**Type:** Finding + Mistake
+**Phase:** 1.5
+
+- `StockStatus` type is defined in `product.model.ts`, not `inventory-log.model.ts`. Incorrectly imported from the log model in both interface and implementation files. Fixed by importing from the correct source. Rule: types shared across models should be checked at the model level before importing.
+- Both Resend and Twilio clients are lazily instantiated (created on first use, not at module load). This prevents startup crashes when `RESEND_API_KEY` / Twilio credentials are not yet configured.
+- `inventory.router.ts` refactored to delegate to `inventoryService` — direct model calls removed. The service layer now owns all stock mutation logic including audit logging.
+
+### [2026-04-20] `??` vs `||` operator mistake — uploads.router.ts
+**Type:** Mistake + Fix
+**Phase:** 1.5
+
+Used `!env.S3_BUCKET_NAME ?? !env.CLOUDFRONT_URL` — TypeScript error TS2869: right operand of `??` is unreachable because `!env.S3_BUCKET_NAME` is always boolean (never null/undefined). Fixed to `||`.
+
+Rule: use `??` for nullish coalescing (null/undefined only), use `||` for falsy checks (boolean, empty string, 0, null, undefined).
+
+### [2026-04-20] Phase 1.4 complete — tRPC routers
+**Type:** Decision + Finding
+**Phase:** 1.4
+
+- T3 scaffold's example `post` router and related components (`src/app/page.tsx`, `src/app/_components/post.tsx`) still referenced `api.post.*` after the router was deleted. Replaced both with minimal placeholders — caught by typecheck, not at runtime.
+- `notification.router.ts` send procedure has a TODO stub for actual dispatch — logs the notification record but doesn't call Resend/Twilio yet. Will be wired to the notification service in Phase 1.5.
+- `uploads.router.ts` presignUrl throws `NOT_IMPLEMENTED` until the S3 storage service is built in Phase 1.5.
+- Inline Zod schemas used in routers for now — will be extracted to `src/lib/validators/` in Phase 1.7.
+- `adminProcedure` throws `UNAUTHORIZED` (no session) or `FORBIDDEN` (wrong role) — two distinct error codes match what the frontend needs for redirect vs. denial UX.
+
 ### [2026-04-20] Phase 1.3 — Auth config (Google OAuth + MongoDB adapter)
 **Type:** Finding + Decision
 **Phase:** 1.3

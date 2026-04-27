@@ -7,7 +7,6 @@ export type NotificationTopic = "restock" | "events" | "sales";
 
 export interface ICustomerNotificationPrefs {
   email: boolean;
-  sms: boolean;
   topics: NotificationTopic[];
 }
 
@@ -32,7 +31,6 @@ export interface ICustomer extends Document {
 const notificationPrefsSchema = new Schema<ICustomerNotificationPrefs>(
   {
     email: { type: Boolean, default: false },
-    sms: { type: Boolean, default: false },
     topics: {
       type: [String],
       enum: ["restock", "events", "sales"] satisfies NotificationTopic[],

@@ -3,15 +3,13 @@ import mongoose, { type Document, type Model, Schema } from "mongoose";
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type NotificationType = "restock" | "event" | "sale" | "custom";
-export type NotificationChannel = "email" | "sms" | "both";
 export type NotificationStatus = "sent" | "failed" | "partial";
 
 export interface INotification extends Document {
   type: NotificationType;
-  channel: NotificationChannel;
   subject: string;
   body: string;
-  productId?: mongoose.Types.ObjectId; // set for restock notifications
+  productId?: mongoose.Types.ObjectId;
   recipients: number;
   status: NotificationStatus;
   adminId: mongoose.Types.ObjectId;
@@ -27,11 +25,6 @@ const notificationSchema = new Schema<INotification>(
     type: {
       type: String,
       enum: ["restock", "event", "sale", "custom"] satisfies NotificationType[],
-      required: true,
-    },
-    channel: {
-      type: String,
-      enum: ["email", "sms", "both"] satisfies NotificationChannel[],
       required: true,
     },
     subject: { type: String, required: true, trim: true },

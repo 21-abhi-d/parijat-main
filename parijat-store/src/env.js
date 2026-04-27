@@ -29,11 +29,6 @@ export const env = createEnv({
     RESEND_API_KEY: z.string().optional(),
     RESEND_FROM_ADDRESS: z.string().email().optional(),
 
-    // Twilio (required when SMS notifications are implemented)
-    TWILIO_ACCOUNT_SID: z.string().optional(),
-    TWILIO_AUTH_TOKEN: z.string().optional(),
-    TWILIO_FROM_NUMBER: z.string().optional(),
-
     // Cal.com webhook (optional — only if booking mirroring is added later)
     CALCOM_WEBHOOK_SECRET: z.string().optional(),
   },
@@ -62,10 +57,6 @@ export const env = createEnv({
 
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_FROM_ADDRESS: process.env.RESEND_FROM_ADDRESS,
-
-    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
-    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
-    TWILIO_FROM_NUMBER: process.env.TWILIO_FROM_NUMBER,
 
     CALCOM_WEBHOOK_SECRET: process.env.CALCOM_WEBHOOK_SECRET,
 
